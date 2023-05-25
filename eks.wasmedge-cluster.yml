@@ -1,0 +1,18 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: kwasm-1
+  region: ap-northeast-1
+  version: "1.24"
+
+managedNodeGroups:
+  - name: ng-kwasm
+    instanceType: t3.medium
+    ami: ami-026df1108a48d3495
+    amiFamily: AmazonLinux2
+    minSize: 1
+    maxSize: 2
+    overrideBootstrapCommand: |
+      #!/bin/bash
+      /etc/eks/bootstrap.sh kwasm-1 --container-runtime containerd
