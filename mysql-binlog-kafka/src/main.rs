@@ -129,17 +129,24 @@ async fn main() -> Result<(),mysql_cdc::errors::Error> {
     let mut kafka_producer = KafkaProducer::connect(kafka_url).await;
     println!("Connected to kafka server");
     kafka_producer.create_topic("mysql_binlog_events").await;
+    println!("Created kafka topic");
     let partitionClient = kafka_producer.get_partition_client(0).await.unwrap();
+    println!("Got kafka partitionClient");
     let mut partition_offset = partitionClient.get_offset(OffsetAt::Latest).await.unwrap();
+    println!("Got kafka partition_offset");
 
     for result in client.replicate()? {
+        println!("Received MySQL event");
         let (header, event) = result?;
 
         let json_event = serde_json::to_string(&event).expect("Couldn't convert sql event to json");
         let json_header = serde_json::to_string(&header).expect("Couldn't convert sql header to json");
 
+        println!("Try to create Kafka record");
         let kafka_record = kafka_producer.create_record(json_header,json_event);
+        println!("Kafka record created");
         partitionClient.produce(vec![kafka_record],Compression::default()).await.unwrap();
+        println!("Kafka record produced");
 
 
         // Consumer
@@ -153,6 +160,7 @@ async fn main() -> Result<(),mysql_cdc::errors::Error> {
             .unwrap();
 
         partition_offset = high_watermark;
+        println!("Kafka new partition_offset");
 
         for record in records {
             let record_clone = record.clone();
@@ -171,7 +179,9 @@ async fn main() -> Result<(),mysql_cdc::errors::Error> {
         }
 
         // After you processed the event, you need to update replication position
+        println!("Try to update MySQL replication");
         client.commit(&header, &event);
+        println!("MySQL replication updated");
     }
     Ok(())
 }
