@@ -23,25 +23,13 @@ kubectl annotate node --all kwasm.sh/kwasm-node=true
 
 ### Run the kubernetes pod
 
-Remember to change the image name and the env variables.
+Remember to change the env variables.
 
 ```
 kubectl apply -f kubernetes.wasmedge-container.yml
 ```
 
 ## Run in kind
-
-### Build & push the docker image
-
-Remember to change the `DOCKER_HUB_USER` and the image name in `kubernetes.wasmedge-container.yml` file.
-
-```
-DOCKER_HUB_USER=dm4tw
-git clone https://github.com/second-state/wasmedge-mysql-binlog-kafka.git
-cd wasmedge-mysql-binlog-kafka
-docker build -t $DOCKER_HUB_USER/wasmedge-mysql-binlog-kafka wasmedge-mysql-binlog-kafka
-docker push $DOCKER_HUB_USER/wasmedge-mysql-binlog-kafka
-```
 
 ### Setup the kind cluster
 
@@ -56,7 +44,7 @@ kubectl annotate node --all kwasm.sh/kwasm-node=true
 
 ### Run the kubernetes pod
 
-Remember to change the image name and the env variables.
+Remember to change the env variables.
 
 ```
 kubectl apply -f kubernetes.wasmedge-container.yml

@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: demo-container
-        image: dm4tw/wasmedge-mysql-binlog-kafka
+        image: secondstate/mysql-binlog-kafka
         env:
         - name: SQL_USERNAME
           value: root
