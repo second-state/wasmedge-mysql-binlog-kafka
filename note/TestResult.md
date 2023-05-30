@@ -195,9 +195,60 @@ mysql5.7                                 | 2023-05-30 10:02:41+00:00 [Note] [Ent
 
 - Run wasm on Env B
 
-- Run services on Env C
+```bash
+$ git clone https://github.com/second-state/wasmedge-mysql-binlog-kafka.git -b add-k8s
+$ cd wasmedge-mysql-binlog-kafka/note
+$ docker compose -f wasmedge.yml up
+...
+image operating system "wasi" cannot be used on this platform: operating system is not supported
+```
 
 - Run wasm on env C
+
+```bash
+$ git clone https://github.com/second-state/wasmedge-mysql-binlog-kafka.git -b add-k8s
+$ cd wasmedge-mysql-binlog-kafka/note
+$ wasmedge --env "SLEEP_TIME=1000"  --env "SQL_USERNAM=root" --env "SQL_PASSWORD=password" --env "SQL_PORT=3306" --env "SQL_HOSTNAME=localhost" --env "SQL_DATABASE=mysql" --env "KAFKA_
+URL=localhost:9092" mysql-binlog-kafka.wasm
+
+Thread started
+Connected to mysql database
+Connected to kafka server
+Created kafka topic
+Got kafka partitionClient
+Got kafka partition_offset
+Received MySQL event
+Try to create Kafka record
+Kafka record created
+Kafka record produced
+Kafka new partition_offset
+============================================== Event from Apache kafka ==========================================================================
+
+Value: {"RotateEvent":{"binlog_filename":"mysql-bin.000004","binlog_position":194}}
+Timestamp: 1970-01-01 00:00:00.042 UTC
+Headers: {"timestamp":0,"event_type":4,"server_id":1,"event_length":47,"next_event_position":0,"event_flags":32}
+
+
+Try to update MySQL replication
+MySQL replication updated
+Received MySQL event
+Try to create Kafka record
+Kafka record created
+Kafka record produced
+Kafka new partition_offset
+============================================== Event from Apache kafka ======================================================
+====================
+
+Value: {"FormatDescriptionEvent":{"binlog_version":4,"server_version":"5.7.42-log","checksum_type":"Crc32"}}
+Timestamp: 1970-01-01 00:00:00.042 UTC
+Headers: {"timestamp":1685441813,"event_type":15,"server_id":1,"event_length":119,"next_event_position":0,"event_flags":0}
+
+
+Try to update MySQL replication
+MySQL replication updated
+
+...
+```
 
 ## Results
 
