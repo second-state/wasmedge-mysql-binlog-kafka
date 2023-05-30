@@ -7,9 +7,9 @@ services:
       SQL_USERNAME: root
       SQL_PASSWORD: password
       SQL_PORT: 3306
-      SQL_HOSTNAME: "192.168.1.12"
+      SQL_HOSTNAME: "localhost"
       SQL_DATABASE: "mysql"
-      KAFKA_URL: "192.168.1.12:9092"
+      KAFKA_URL: "localhost:9092"
       SLEEP_TIME: 10000
       RUST_BACKTRACE: full
     runtime: io.containerd.wasmedge.v1
