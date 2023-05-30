@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  wasmedge_binlog_kafka:
+    container_name: "wasmedge_binlog_kafka"
+    image: secondstate/mysql-binlog-kafka
+    environment:
+      SQL_USERNAME: root
+      SQL_PASSWORD: password
+      SQL_PORT: 3306
+      SQL_HOSTNAME: "192.168.1.12"
+      SQL_DATABASE: "mysql"
+      KAFKA_URL: "192.168.1.12:9092"
+      SLEEP_TIME: 10000
+      RUST_BACKTRACE: full
+    runtime: io.containerd.wasmedge.v1
+    restart: unless-stopped
