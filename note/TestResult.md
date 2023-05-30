@@ -1,8 +1,17 @@
 # Test Result
 
-## Summary
+## Introduction
 
-| Env          | Services         | Binlog Wasm (Docker Compose) | Binlog Wasm (WasmEdge cli) |
+Our goal is to ensure the Kafka example functions properly on the EKS cluster. However, we've encountered some problems while attempting to deploy the example on the EKS cluster. In order to investigate these issues, we are performing the following checks:
+
+1. We're using Docker Compose to run the current example to confirm its correctness.
+2. We're converting the Docker Compose YAML file into an EKS configuration file.
+
+For this example, all services—including MySQL, Zookeeper, and Kafka—are using native containers (non-wasm). The binlog application is compiled into wasm format and we have two ways to execute it: by using Docker Compose or by directly using wasmedge-cli.
+
+## Current Status
+
+| Environment  | Services         | Binlog Wasm (Docker Compose) | Binlog Wasm (WasmEdge CLI) |
 | ------------ | ---------------- | ---------------------------- | -------------------------- |
 | macOS        | X [^mac-service] | X [^mac-wasm]                | X [^mac-wasmedge-wasm]     |
 | Ubuntu 20.04 | O                | X [^ubuntu-wasm]             | O [^ubuntu-wasmedge-wasm]  |
@@ -15,6 +24,8 @@
 [^ubuntu-wasmedge-wasm]: successfully running wasm ![ubuntu-wasmedge-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/ubuntu-wasmedge-wasm.png?raw=true)
 
 ## Environment
+
+Here is a list of the software versions we're using for testing on macOS and Ubuntu 20.04:
 
 - macOS
 
@@ -87,16 +98,18 @@
   wasmedge version 0.12.1
   ```
 
-## Actions
+## Components
+
+We're testing the following components:
 
 - Services
   - Use [docker-compose.yml](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/04a110e/docker-compose.yml) to run kafka + zookeeper + mysql
-- `insert.wasm`
-  - After successfully running services, run [insert.wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/04a110e/mysql-binlog-kafka/sql-commands-test-wasm/insert.wasm) to insert data into MySQL.
 - Binlog Wasm
   - (Docker Compose) Run docker image [secondstate/mysql-binlog-kafka](https://hub.docker.com/r/secondstate/mysql-binlog-kafka/tags).
   - (WasmEdge cli) Extract `/mysql-binlog-kafka.wasm` file from image [secondstate/mysql-binlog-kafka](https://hub.docker.com/r/secondstate/mysql-binlog-kafka/tags) and run it using WasmEdge cli.
   - Check if there are any logs coming from the wasm runtime after running `insert.wasm`.
+- `insert.wasm`
+  - After successfully running services and binlog, run [insert.wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/04a110e/mysql-binlog-kafka/sql-commands-test-wasm/insert.wasm) to insert data into MySQL.
 
 ## Steps
 
@@ -106,14 +119,6 @@
 git clone https://github.com/second-state/wasmedge-mysql-binlog-kafka.git
 cd wasmedge-mysql-binlog-kafka
 docker compose -f docker-compose.yml up
-```
-
-### Run insert.wasm
-
-```bash
-git clone https://github.com/second-state/wasmedge-mysql-binlog-kafka.git
-cd wasmedge-mysql-binlog-kafka/mysql-binlog-kafka
-wasmedge --env "DATABASE_URL=mysql://root:password@127.0.0.1:3306/mysql" sql-commands-test-wasm/insert.wasm
 ```
 
 ### Run Binglog Wasm
@@ -134,6 +139,14 @@ cd wasmedge-mysql-binlog-kafka/note
 wasmedge --env "SLEEP_TIME=1000" --env "SQL_USERNAME=root" --env "SQL_PASSWORD=password" --env "SQL_PORT=3306" --env "SQL_HOSTNAME=localhost" --env "SQL_DATABASE=mysql" --env "KAFKA_URL=localhost:9092" mysql-binlog-kafka.wasm
 ```
 
+### Run insert.wasm
+
+```bash
+git clone https://github.com/second-state/wasmedge-mysql-binlog-kafka.git
+cd wasmedge-mysql-binlog-kafka/mysql-binlog-kafka
+wasmedge --env "DATABASE_URL=mysql://root:password@127.0.0.1:3306/mysql" sql-commands-test-wasm/insert.wasm
+```
+
 ## Results
 
 - Run services on macOS
@@ -151,4 +164,5 @@ wasmedge --env "SLEEP_TIME=1000" --env "SQL_USERNAME=root" --env "SQL_PASSWORD=p
 
 ## Next Step
 
-TBA
+1. Figure out why the binlog wasm in the docker compose will hang.
+2. Migrate the current configuration files to the EKS cluster
