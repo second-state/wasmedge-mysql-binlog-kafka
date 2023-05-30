@@ -258,7 +258,7 @@ MySQL replication updated
 | B   | O                | X [^ubuntu-wasm] |
 | C   |                  | O [^wasmedge-wasm]                 |
 
-[^mac-service]: no match for platform in manifest: not found ![](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-service.png?raw=true)
-[^mac-wasm]: 成功 connect ，但跑了 insert.wasm 之後沒有 log ![](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-wasm.png?raw=true)
-[^ubuntu-wasm]: operating system is not supported ![](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/ubuntu-wasm.png?raw=true)
-[^wasmedge-wasm]: 跑了 insert.wasm 之後有成功出現 log ![](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/wasmedge-wasm.png?raw=true)
+[^mac-service]: no match for platform in manifest: not found ![mac-service](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-service.png?raw=true)
+[^mac-wasm]: connect successfully, but no logs after running insert.wasm ![mac-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-wasm.png?raw=true)
+[^ubuntu-wasm]: operating system is not supported ![ubuntu-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/ubuntu-wasm.png?raw=true)
+[^wasmedge-wasm]: successfully running wasm ![wasmedge-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/wasmedge-wasm.png?raw=true)
