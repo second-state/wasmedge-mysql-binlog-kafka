@@ -4,14 +4,15 @@
 
 | Env          | Services         | Binlog Wasm (Docker Compose) | Binlog Wasm (WasmEdge cli) |
 | ------------ | ---------------- | ---------------------------- | -------------------------- |
-| macOS        | X [^mac-service] | X [^mac-wasm]                |                            |
-| Ubuntu 20.04 | O                | X [^ubuntu-wasm]             | O [^wasmedge-wasm]         |
+| macOS        | X [^mac-service] | X [^mac-wasm]                | X [^mac-wasmedge-wasm]     |
+| Ubuntu 20.04 | O                | X [^ubuntu-wasm]             | O [^ubuntu-wasmedge-wasm]  |
 | EKS          | TBA              |                              |                            |
 
 [^mac-service]: no match for platform in manifest: not found ![mac-service](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-service.png?raw=true)
 [^mac-wasm]: connect successfully, but no logs after running insert.wasm ![mac-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-wasm.png?raw=true)
+[^mac-wasmedge-wasm]: Stuck after connecting to MySQL ![mac-wasmedge-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-wasmedge-wasm.png?raw=true)
 [^ubuntu-wasm]: operating system is not supported ![ubuntu-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/ubuntu-wasm.png?raw=true)
-[^wasmedge-wasm]: successfully running wasm ![wasmedge-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/wasmedge-wasm.png?raw=true)
+[^ubuntu-wasmedge-wasm]: successfully running wasm ![ubuntu-wasmedge-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/ubuntu-wasmedge-wasm.png?raw=true)
 
 ## Environment
 
@@ -130,12 +131,23 @@ docker compose -f wasmedge.yml up
 ```bash
 git clone https://github.com/second-state/wasmedge-mysql-binlog-kafka.git -b add-k8s
 cd wasmedge-mysql-binlog-kafka/note
-wasmedge --env "SLEEP_TIME=1000"  --env "SQL_USERNAM=root" --env "SQL_PASSWORD=password" --env "SQL_PORT=3306" --env "SQL_HOSTNAME=localhost" --env "SQL_DATABASE=mysql" --env "KAFKA_URL=localhost:9092" mysql-binlog-kafka.wasm
+wasmedge --env "SLEEP_TIME=1000" --env "SQL_USERNAME=root" --env "SQL_PASSWORD=password" --env "SQL_PORT=3306" --env "SQL_HOSTNAME=localhost" --env "SQL_DATABASE=mysql" --env "KAFKA_URL=localhost:9092" mysql-binlog-kafka.wasm
 ```
 
 ## Results
 
-TBA
+- Run services on macOS
+  - Failed with error: `no match for platform in manifest: not found`.
+- Run services on Ubuntu 20.04
+  - Successfully run services.
+- Run Binlog wasm (Docker Compose) on macOS
+  - Successfully run Binlog wasm file, but not receive any logs from wasm runtime after executing `insert.wasm`.
+- Run Binlog wasm (Docker Compose) on Ubuntu 20.04
+  - Failed with error: `image operating system "wasi" cannot be used on this platform: operating system is not supported`.
+- Run Binlog wasm (WasmEdge cli) on macOS
+  - Successfully run Binlog wasm file, but stuck after `Connected to mysql database`
+- Run Binlog wasm (WasmEdge cli) on Ubuntu 20.04
+  - Successfully run Binlog wasm file, and receive logs from wasm runtime after executing `insert.wasm`.
 
 ## Next Step
 
