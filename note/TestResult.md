@@ -11,7 +11,7 @@
 | B   | O                | X [^ubuntu-wasm] |
 | C   |                  | O [^wasmedge-wasm]                 |
 
-[^mac-service]: no match for platform in manifest: not found ![](images/mac-service.png)
-[^mac-wasm]: 成功 connect ，但跑了 insert.wasm 之後沒有 log ![](images/mac-wasm.png)
-[^ubuntu-wasm]: operating system is not supported ![](images/ubuntu-wasm.png)
-[^wasmedge-wasm]: 跑了 insert.wasm 之後有成功出現 log ![](images/wasmedge-wasm.png)
+[^mac-service]: no match for platform in manifest: not found ![](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-service.png?raw=true)
+[^mac-wasm]: 成功 connect ，但跑了 insert.wasm 之後沒有 log ![](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-wasm.png?raw=true)
+[^ubuntu-wasm]: operating system is not supported ![](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/ubuntu-wasm.png?raw=true)
+[^wasmedge-wasm]: 跑了 insert.wasm 之後有成功出現 log ![](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/wasmedge-wasm.png?raw=true)
