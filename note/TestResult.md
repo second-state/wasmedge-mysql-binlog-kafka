@@ -11,11 +11,22 @@ For this example, all services—including MySQL, Zookeeper, and Kafka—are usi
 
 ## Current Status
 
-| Environment  | Services         | Binlog Wasm (Docker Compose) | Binlog Wasm (WasmEdge CLI) |
-| ------------ | ---------------- | ---------------------------- | -------------------------- |
-| macOS        | X [^mac-service] | X [^mac-wasm]                | X [^mac-wasmedge-wasm]     |
-| Ubuntu 20.04 | O                | X [^ubuntu-wasm]             | O [^ubuntu-wasmedge-wasm]  |
-| EKS          | TBA              |                              |                            |
+### Services - MySQL + ZooKeeper + Kafka
+
+| Environment  | Services         |
+| ------------ | ---------------- |
+| macOS        | X [^mac-service] |
+| Ubuntu 20.04 | O                |
+| EKS          | TBA              |
+
+### Binlog - Connect to the Services on Ubuntu 20.04
+
+| Environment  | Binlog Wasm (Docker Compose) | Binlog Wasm (WasmEdge CLI) |
+| ------------ | ---------------------------- | -------------------------- |
+| macOS        | X [^mac-wasm]                | X [^mac-wasmedge-wasm]     |
+| Ubuntu 20.04 | X [^ubuntu-wasm]             | O [^ubuntu-wasmedge-wasm]  |
+| EKS          | TBA                          | TBA                        |
+
 
 [^mac-service]: no match for platform in manifest: not found ![mac-service](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-service.png?raw=true)
 [^mac-wasm]: connect successfully, but no logs after running insert.wasm ![mac-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-wasm.png?raw=true)
