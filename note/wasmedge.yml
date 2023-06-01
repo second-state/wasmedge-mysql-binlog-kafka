@@ -12,5 +12,6 @@ services:
       KAFKA_URL: "localhost:9092"
       SLEEP_TIME: 10000
       RUST_BACKTRACE: full
+    platform: wasi/wasm
     runtime: io.containerd.wasmedge.v1
     restart: unless-stopped
