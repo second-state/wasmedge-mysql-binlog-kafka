@@ -13,30 +13,29 @@ For this example, all services—including MySQL, Zookeeper, and Kafka—are usi
 
 ### Services - MySQL + ZooKeeper + Kafka
 
-| Environment  | Services         |
-| ------------ | ---------------- |
-| macOS        | X [^mac-service] |
-| Ubuntu 20.04 | O                |
-| EKS          | TBA              |
+| Environment | Services         |
+| ----------- | ---------------- |
+| macOS       | X [^mac-service] |
+| Ubuntu      | O                |
+| EKS         | TBA              |
 
-### Binlog - Connect to the Services on Ubuntu 20.04
+### Binlog - Connect to the Services on Ubuntu
 
-| Environment  | Binlog Wasm (Docker Compose) | Binlog Wasm (WasmEdge CLI) |
-| ------------ | ---------------------------- | -------------------------- |
-| macOS        | X [^mac-wasm]                | X [^mac-wasmedge-wasm]     |
-| Ubuntu 20.04 | X [^ubuntu-wasm]             | O [^ubuntu-wasmedge-wasm]  |
-| EKS          | TBA                          | TBA                        |
-
+| Environment | Binlog Wasm (Docker Compose) | Binlog Wasm (WasmEdge CLI) |
+| ----------- | ---------------------------- | -------------------------- |
+| macOS       | X [^mac-wasm]                | X [^mac-wasmedge-wasm]     |
+| Ubuntu      | X [^ubuntu-wasm]             | O [^ubuntu-wasmedge-wasm]  |
+| EKS         | TBA                          | TBA                        |
 
 [^mac-service]: no match for platform in manifest: not found ![mac-service](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-service.png?raw=true)
 [^mac-wasm]: connect successfully, but no logs after running insert.wasm ![mac-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-wasm.png?raw=true)
 [^mac-wasmedge-wasm]: Stuck after connecting to MySQL ![mac-wasmedge-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-wasmedge-wasm.png?raw=true)
-[^ubuntu-wasm]: operating system is not supported ![ubuntu-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/ubuntu-wasm.png?raw=true)
+[^ubuntu-wasm]: Stuck after connecting to MySQL ![ubuntu-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/ubuntu-wasm.png?raw=true)
 [^ubuntu-wasmedge-wasm]: successfully running wasm ![ubuntu-wasmedge-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/ubuntu-wasmedge-wasm.png?raw=true)
 
 ## Environment
 
-Here is a list of the software versions we're using for testing on macOS and Ubuntu 20.04:
+Here is a list of the software versions we're using for testing on macOS and Ubuntu:
 
 - macOS
 
@@ -74,28 +73,37 @@ Here is a list of the software versions we're using for testing on macOS and Ubu
     GitCommit:        de40ad0
   ```
 
-- Ubuntu 20.04
+- Ubuntu
 
   ```bash
+  $ lsb_release -a
+  No LSB modules are available.
+  Distributor ID: Ubuntu
+  Description: Ubuntu 22.04.2 LTS
+  Release: 22.04
+  Codename: jammy
+  
   $ uname -a
-  Linux neihu-2 5.15.0-52-generic #58~20.04.1-Ubuntu SMP Thu Oct 13 13:09:46 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
-  $ docker verison
+  Linux vm-ubuntu 5.15.0-1039-azure #46-Ubuntu SMP Mon May 22 15:18:07 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+  
+  $ docker version
   Client: Docker Engine - Community
-   Version:           23.0.4
-   API version:       1.42
-   Go version:        go1.19.8
-   Git commit:        f480fb1
-   Built:             Fri Apr 14 10:32:23 2023
+   Cloud integration: v1.0.33
+   Version:           24.0.2
+   API version:       1.43
+   Go version:        go1.20.4
+   Git commit:        cb74dfc
+   Built:             Thu May 25 21:51:00 2023
    OS/Arch:           linux/amd64
-   Context:           default
-
-  Server: Docker Engine - Community
+   Context:           desktop-linux
+  
+  Server: Docker Desktop 4.20.0 (109717)
    Engine:
-    Version:          23.0.4
-    API version:      1.42 (minimum version 1.12)
-    Go version:       go1.19.8
-    Git commit:       cbce331
-    Built:            Fri Apr 14 10:32:23 2023
+    Version:          24.0.2
+    API version:      1.43 (minimum version 1.12)
+    Go version:       go1.20.4
+    Git commit:       659604f9ee60f147020bdd444b26e4b5c636dc28
+    Built:            Fri May 26 00:37:28 2023
     OS/Arch:          linux/amd64
     Experimental:     false
    containerd:
@@ -104,6 +112,9 @@ Here is a list of the software versions we're using for testing on macOS and Ubu
    runc:
     Version:          1.1.7
     GitCommit:        v1.1.7-0-g860f061
+   docker-init:
+    Version:          0.19.0
+    GitCommit:        de40ad0
 
   $ wasmedge --version
   wasmedge version 0.12.1
@@ -162,15 +173,15 @@ wasmedge --env "DATABASE_URL=mysql://root:password@127.0.0.1:3306/mysql" sql-com
 
 - Run services on macOS
   - Failed with error: `no match for platform in manifest: not found`.
-- Run services on Ubuntu 20.04
+- Run services on Ubuntu
   - Successfully run services.
 - Run Binlog wasm (Docker Compose) on macOS
   - Successfully run Binlog wasm file, but not receive any logs from wasm runtime after executing `insert.wasm`.
-- Run Binlog wasm (Docker Compose) on Ubuntu 20.04
-  - Failed with error: `image operating system "wasi" cannot be used on this platform: operating system is not supported`.
+- Run Binlog wasm (Docker Compose) on Ubuntu
+  - Successfully run Binlog wasm file, but stuck after `Connected to mysql database`.
 - Run Binlog wasm (WasmEdge cli) on macOS
-  - Successfully run Binlog wasm file, but stuck after `Connected to mysql database`
-- Run Binlog wasm (WasmEdge cli) on Ubuntu 20.04
+  - Successfully run Binlog wasm file, but stuck after `Connected to mysql database`.
+- Run Binlog wasm (WasmEdge cli) on Ubuntu
   - Successfully run Binlog wasm file, and receive logs from wasm runtime after executing `insert.wasm`.
 
 ## Next Step
