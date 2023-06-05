@@ -235,4 +235,5 @@ wasmedge --env "DATABASE_URL=mysql://root:password@127.0.0.1:3306/mysql" sql-com
 ## Next Step
 
 1. Figure out why the binlog wasm in the docker compose will hang.
-2. Migrate the current configuration files to the EKS cluster
+2. Successfully run the binlog wasm in the kind environment locally.
+3. Migrate the current configuration files to the EKS cluster.
