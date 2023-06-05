@@ -31,11 +31,11 @@ spec:
         - name: SQL_PORT
           value: "3306"
         - name: SQL_HOSTNAME
-          value: mysql
+          value: 127.0.0.1
         - name: SQL_DATABASE
           value: mysql
         - name: KAFKA_URL
-          value: kafka:29090
+          value: 127.0.0.1:9092
         - name: SLEEP_TIME
           value: "10000"
         - name: RUST_BACKTRACE
