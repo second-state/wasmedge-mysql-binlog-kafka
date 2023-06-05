@@ -17,21 +17,24 @@ For this example, all services—including MySQL, Zookeeper, and Kafka—are usi
 | ----------- | ---------------- |
 | macOS       | X [^mac-service] |
 | Ubuntu      | O                |
+| kind        | TBA              |
 | EKS         | TBA              |
 
 ### Binlog - Connect to the Services on Ubuntu
 
-| Environment | Binlog Wasm (Docker Compose) | Binlog Wasm (WasmEdge CLI) |
-| ----------- | ---------------------------- | -------------------------- |
-| macOS       | X [^mac-wasm]                | X [^mac-wasmedge-wasm]     |
-| Ubuntu      | X [^ubuntu-wasm]             | O [^ubuntu-wasmedge-wasm]  |
-| EKS         | TBA                          | TBA                        |
+| Environment | Binlog Wasm (Docker Compose) | Binlog Wasm (WasmEdge CLI) | Binlog Wasm (k8s)  |
+| ----------- | ---------------------------- | -------------------------- | ------------------ |
+| macOS       | X [^mac-wasm]                | X [^mac-wasmedge-wasm]     |                    |
+| Ubuntu      | X [^ubuntu-wasm]             | O [^ubuntu-wasmedge-wasm]  |                    |
+| kind        |                              |                            | X [^kind-k8s-wasm] |
+| EKS         |                              |                            | TBA                |
 
 [^mac-service]: no match for platform in manifest: not found ![mac-service](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-service.png?raw=true)
 [^mac-wasm]: connect successfully, but no logs after running insert.wasm ![mac-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-wasm.png?raw=true)
 [^mac-wasmedge-wasm]: Stuck after connecting to MySQL ![mac-wasmedge-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-wasmedge-wasm.png?raw=true)
 [^ubuntu-wasm]: Stuck after connecting to MySQL ![ubuntu-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/ubuntu-wasm.png?raw=true)
 [^ubuntu-wasmedge-wasm]: successfully running wasm ![ubuntu-wasmedge-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/ubuntu-wasmedge-wasm.png?raw=true)
+[^kind-k8s-wasm]: Stuck after connecting to MySQL ![kind-k8s-wasm](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/kind-k8s-wasm.png?raw=true)
 
 ## Environment
 
@@ -120,6 +123,40 @@ Here is a list of the software versions we're using for testing on macOS and Ubu
   wasmedge version 0.12.1
   ```
 
+- kind
+
+  ```bash
+  $ kind version
+  kind v0.18.0 go1.17.3 linux/amd64
+
+  $ kubectl version --output=json
+  {
+    "clientVersion": {
+      "major": "1",
+      "minor": "26",
+      "gitVersion": "v1.26.3",
+      "gitCommit": "9e644106593f3f4aa98f8a84b23db5fa378900bd",
+      "gitTreeState": "clean",
+      "buildDate": "2023-03-15T13:40:17Z",
+      "goVersion": "go1.19.7",
+      "compiler": "gc",
+      "platform": "linux/amd64"
+    },
+    "kustomizeVersion": "v4.5.7",
+    "serverVersion": {
+      "major": "1",
+      "minor": "26",
+      "gitVersion": "v1.26.3",
+      "gitCommit": "9e644106593f3f4aa98f8a84b23db5fa378900bd",
+      "gitTreeState": "clean",
+      "buildDate": "2023-03-30T06:34:50Z",
+      "goVersion": "go1.19.7",
+      "compiler": "gc",
+      "platform": "linux/amd64"
+    }
+  }
+  ```
+
 ## Components
 
 We're testing the following components:
@@ -161,6 +198,15 @@ cd wasmedge-mysql-binlog-kafka/note
 wasmedge --env "SLEEP_TIME=1000" --env "SQL_USERNAME=root" --env "SQL_PASSWORD=password" --env "SQL_PORT=3306" --env "SQL_HOSTNAME=localhost" --env "SQL_DATABASE=mysql" --env "KAFKA_URL=localhost:9092" mysql-binlog-kafka.wasm
 ```
 
+#### Use kubernetes (with kind)
+
+```bash
+git clone https://github.com/second-state/wasmedge-mysql-binlog-kafka.git -b add-k8s
+cd wasmedge-mysql-binlog-kafka/note
+kind create cluster
+kubectl apply -f kind-binlog.yml
+```
+
 ### Run insert.wasm
 
 ```bash
@@ -183,6 +229,8 @@ wasmedge --env "DATABASE_URL=mysql://root:password@127.0.0.1:3306/mysql" sql-com
   - Successfully run Binlog wasm file, but stuck after `Connected to mysql database`.
 - Run Binlog wasm (WasmEdge cli) on Ubuntu
   - Successfully run Binlog wasm file, and receive logs from wasm runtime after executing `insert.wasm`.
+- Run Binlog wasm (with kubernetes) on kind
+  - Successfully run Binlog wasm file, but stuck after `Connected to mysql database`.
 
 ## Next Step
 
