@@ -4,12 +4,12 @@ kind: ClusterConfig
 metadata:
   name: kwasm-1
   region: ap-northeast-1
-  version: "1.24"
+  version: "1.26"
 
 managedNodeGroups:
   - name: ng-kwasm
     instanceType: t3.medium
-    ami: ami-026df1108a48d3495
+    ami: ami-0ce575f5f4db5d208
     amiFamily: AmazonLinux2
     minSize: 1
     maxSize: 2
