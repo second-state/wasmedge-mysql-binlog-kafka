@@ -27,10 +27,11 @@ For this example, all services—including MySQL, Zookeeper, and Kafka—are usi
 
 ### Kubernetes - Run Service and Binlog
 
-| Environment | Result             |
-| ----------- | ------------------ |
-| kind        | X [^k8s-kind-wasm] |
-| EKS         | X [^k8s-eks-wasm]  |
+| Environment               | Result                |
+| ------------------------- | --------------------- |
+| kind                      | X [^k8s-kind-wasm]    |
+| EKS                       | X [^k8s-eks-wasm]     |
+| EKS with Ubuntu container | X [^k8s-eks-wasm-cli] |
 
 [^mac-service]: no match for platform in manifest: not found ![#](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-service.png?raw=true)
 [^mac-wasm]: connect successfully, but no logs after running insert.wasm ![#](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-wasm.png?raw=true)
@@ -39,6 +40,7 @@ For this example, all services—including MySQL, Zookeeper, and Kafka—are usi
 [^ubuntu-wasmedge-wasm]: successfully running wasm ![#](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/ubuntu-wasmedge-wasm.png?raw=true)
 [^k8s-kind-wasm]: Throw fail to resolve url error after connecting to MySQL ![#](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/k8s-kind-wasm.png?raw=true)
 [^k8s-eks-wasm]: Throw fail to resolve url error after connecting to MySQL ![#](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/k8s-eks-wasm.png?raw=true)
+[^k8s-eks-wasm-cli]: Throw `thread 'main' panicked at 'mask too long'` error ![#](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/k8s-eks-wasm-cli.png?raw=true)
 
 ## Environment
 
@@ -259,8 +261,18 @@ kubectl annotate node --all kwasm.sh/kwasm-node=true
 kubectl logs deployment.apps/kwasm-operator -n kwasm
 helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka
 kubectl logs service/kafka
+```
+
+Run wasm using crun runtime:
+
+```bash
 kubectl apply -f kubernetes-binlog.yml
-kubectl logs deployment.apps/binlog-deployment
+```
+
+Run wasm using wasmedge cli in Ubuntu container (built from [note/Dockerfile.wasmedge](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/Dockerfile.wasmedge)):
+
+```bash
+kubectl apply -f kubernetes-binlog-cli.yml
 ```
 
 ### Run insert.wasm
@@ -289,6 +301,8 @@ wasmedge --env "DATABASE_URL=mysql://root:password@127.0.0.1:3306/mysql" sql-com
   - Throw `Fail to resolve url` error after `Connected to mysql database`.
 - Run Binlog wasm (Kubernetes) with EKS
   - Throw `Fail to resolve url` error after `Connected to mysql database`.
+- Run Binlog wasm (Kubernetes) in Ubuntu container with EKS
+  - Throw `thread 'main' panicked at 'mask too long'` error.
 
 ## Next Step
 

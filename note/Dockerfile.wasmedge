@@ -1,0 +1,20 @@
+FROM ubuntu:22.04
+
+RUN apt update && \
+    apt install -y \
+        curl \
+        git \
+        python3
+RUN curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | bash -s -- -e all
+COPY ./mysql-binlog-kafka.wasm /
+COPY ./insert.wasm /
+
+CMD ["/root/.wasmedge/bin/wasmedge", \
+     "--env", "SLEEP_TIME=1000", \
+     "--env", "SQL_USERNAME=root", \
+     "--env", "SQL_PASSWORD=password", \
+     "--env", "SQL_PORT=3306", \
+     "--env", "SQL_HOSTNAME=mysql", \
+     "--env", "SQL_DATABASE=mysql", \
+     "--env", "KAFKA_URL=kafka:9092", \
+     "/mysql-binlog-kafka.wasm"]
