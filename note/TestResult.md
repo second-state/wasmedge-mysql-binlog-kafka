@@ -31,7 +31,7 @@ For this example, all services—including MySQL, Zookeeper, and Kafka—are usi
 | ------------------------- | --------------------- |
 | kind                      | X [^k8s-kind-wasm]    |
 | EKS                       | X [^k8s-eks-wasm]     |
-| EKS with Ubuntu container | X [^k8s-eks-wasm-cli] |
+| EKS with Ubuntu container | O [^k8s-eks-wasm-cli] |
 
 [^mac-service]: no match for platform in manifest: not found ![#](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-service.png?raw=true)
 [^mac-wasm]: connect successfully, but no logs after running insert.wasm ![#](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/mac-wasm.png?raw=true)
@@ -40,7 +40,7 @@ For this example, all services—including MySQL, Zookeeper, and Kafka—are usi
 [^ubuntu-wasmedge-wasm]: successfully running wasm ![#](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/ubuntu-wasmedge-wasm.png?raw=true)
 [^k8s-kind-wasm]: Throw fail to resolve url error after connecting to MySQL ![#](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/k8s-kind-wasm.png?raw=true)
 [^k8s-eks-wasm]: Throw fail to resolve url error after connecting to MySQL ![#](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/k8s-eks-wasm.png?raw=true)
-[^k8s-eks-wasm-cli]: Throw `thread 'main' panicked at 'mask too long'` error ![#](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/k8s-eks-wasm-cli.png?raw=true)
+[^k8s-eks-wasm-cli]: successfully running wasm ![#](https://github.com/second-state/wasmedge-mysql-binlog-kafka/blob/add-k8s/note/images/k8s-eks-wasm-cli.png?raw=true)
 
 ## Environment
 
@@ -277,10 +277,21 @@ kubectl apply -f kubernetes-binlog-cli.yml
 
 ### Run insert.wasm
 
+#### Use WasmEdge Cli
+
 ```bash
 git clone https://github.com/second-state/wasmedge-mysql-binlog-kafka.git
 cd wasmedge-mysql-binlog-kafka/mysql-binlog-kafka
 wasmedge --env "DATABASE_URL=mysql://root:password@127.0.0.1:3306/mysql" sql-commands-test-wasm/insert.wasm
+```
+
+#### Use kubernetes
+
+```bash
+git clone https://github.com/second-state/wasmedge-mysql-binlog-kafka.git -b add-k8s
+cd wasmedge-mysql-binlog-kafka/note
+kubectl apply -f kubernetes-binlog-cli-insert.yml
+kubectl logs -f job.batch/insert
 ```
 
 ## Results
@@ -302,7 +313,7 @@ wasmedge --env "DATABASE_URL=mysql://root:password@127.0.0.1:3306/mysql" sql-com
 - Run Binlog wasm (Kubernetes) with EKS
   - Throw `Fail to resolve url` error after `Connected to mysql database`.
 - Run Binlog wasm (Kubernetes) in Ubuntu container with EKS
-  - Throw `thread 'main' panicked at 'mask too long'` error.
+  - Successfully run Binlog wasm file, and receive logs from wasm runtime after executing `insert.wasm`.
 
 ## Next Step
 

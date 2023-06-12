@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: mysql:8.0
+        image: mariadb:11.0
         args:
         - "--server-id=1"
         - "--log-bin=mysql-bin"
@@ -22,8 +22,6 @@ spec:
         - "--binlog-format=MIXED"
         - "--sync-binlog=1"
         - "--log-slave-updates=ON"
-        - "--gtid-mode=ON"
-        - "--enforce-gtid-consistency=ON"
         - "--character-set-server=utf8mb4"
         - "--collation-server=utf8mb4_unicode_ci"
         - "--max-connections=1000"
