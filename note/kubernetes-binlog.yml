@@ -69,7 +69,8 @@ spec:
     spec:
       containers:
       - name: binlog-container
-        image: secondstate/mysql-binlog-kafka
+        image: dm4tw/mysql-binlog-kafka
+        imagePullPolicy: Always
         env:
         - name: SQL_USERNAME
           value: root
