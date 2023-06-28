@@ -17,6 +17,8 @@ COPY mysql-binlog-kafka/Cargo.toml .
 COPY mysql-binlog-kafka/src ./src
 WORKDIR /mysql-binlog-kafka
 COPY mysql_cdc ./mysql_cdc
+COPY tokio_wasi ./tokio_wasi
+COPY mio_wasi ./mio_wasi
 WORKDIR /mysql-binlog-kafka/mysql-binlog-kafka
 # Build the Wasm binary
 RUN cargo build --target wasm32-wasi --release
