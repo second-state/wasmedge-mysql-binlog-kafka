@@ -1,0 +1,50 @@
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+  name: crun
+handler: crun
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: binlog-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: binlog-app
+  template:
+    metadata:
+      labels:
+        app: binlog-app
+      annotations:
+        module.wasm.image/variant: compat-smart
+    spec:
+      containers:
+      - name: binlog-container
+        image: dm4tw/mysql-binlog-kafka
+        imagePullPolicy: Always
+        env:
+        - name: SQL_USERNAME
+          value: root
+        - name: SQL_PASSWORD
+          value: password
+        - name: SQL_PORT
+          value: "3306"
+        - name: SQL_DATABASE
+          value: mysql
+        - name: SQL_HOSTNAME
+          value: 10.100.136.97
+        - name: KAFKA_URL
+          value: 10.100.118.7:9092
+        # - name: SQL_HOSTNAME
+        #   value: <SQL_HOSTNAME>
+        # - name: KAFKA_URL
+        #   value: <KAFKA_URL>:9092
+        - name: SLEEP_TIME
+          value: "10000"
+        - name: RUST_BACKTRACE
+          value: full
+        - name: DNS_SERVER
+          value: 10.100.0.10:53
+      runtimeClassName: crun
