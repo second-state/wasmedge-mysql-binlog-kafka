@@ -34,13 +34,9 @@ spec:
         - name: SQL_DATABASE
           value: mysql
         - name: SQL_HOSTNAME
-          value: 10.100.136.97
+          value: <SQL_HOSTNAME>
         - name: KAFKA_URL
-          value: 10.100.118.7:9092
-        # - name: SQL_HOSTNAME
-        #   value: <SQL_HOSTNAME>
-        # - name: KAFKA_URL
-        #   value: <KAFKA_URL>:9092
+          value: <KAFKA_URL>:9092
         - name: SLEEP_TIME
           value: "10000"
         - name: RUST_BACKTRACE
