@@ -12,8 +12,8 @@ cd wasmedge-mysql-binlog-kafka/kubernetes
 eksctl create cluster -f eks-cluster.yml
 ```
 
-![#](./images/create-cluster-1.png)
-![#](./images/create-cluster-2.png)
+![#](kubernetes/images/create-cluster-1.png)
+![#](kubernetes/images/create-cluster-2.png)
 
 ## Setup kwasm
 
@@ -26,7 +26,7 @@ helm install -n kwasm --create-namespace kwasm-operator kwasm-ss/kwasm-operator
 kubectl annotate node --all kwasm.sh/kwasm-node=true
 ```
 
-![#](./images/kwasm.png)
+![#](kubernetes/images/kwasm.png)
 
 ## Setup Kafka
 
@@ -37,7 +37,7 @@ please refer to <https://github.com/bitnami/charts/tree/main/bitnami/kafka>.
 helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka
 ```
 
-![#](./images/kafka.png)
+![#](kubernetes/images/kafka.png)
 
 The persistent volume claim for Kafka is not created automatically. Please create it manually.
 
@@ -65,7 +65,7 @@ eksctl create addon \
   --force
 ```
 
-![#](./images/csi-driver.png)
+![#](kubernetes/images/csi-driver.png)
 
 ## Run the MySQL service
 
@@ -73,7 +73,7 @@ eksctl create addon \
 kubectl apply -f mysql.yml
 ```
 
-![#](./images/mysql.png)
+![#](kubernetes/images/mysql.png)
 
 ## Get IP of service
 
@@ -107,7 +107,7 @@ Replace `<SQL_HOSTNAME>` and `<KAFKA_URL>` with the IPs from the previous step.
 kubectl apply -f binlog.yml
 ```
 
-![#](./images/binlog.png)
+![#](kubernetes/images/binlog.png)
 
 ## Check the logs from the Binlog service
 
@@ -115,7 +115,7 @@ kubectl apply -f binlog.yml
 kubectl logs deployment.apps/binlog-deployment
 ```
 
-![#](./images/binlog-log-before.png)
+![#](kubernetes/images/binlog-log-before.png)
 
 ## Run the insert script & Check the logs
 
@@ -123,13 +123,13 @@ kubectl logs deployment.apps/binlog-deployment
 kubectl apply -f insert.yml
 ```
 
-![#](./images/insert.png)
+![#](kubernetes/images/insert.png)
 
 ```bash
 kubectl logs job.batch/insert
 ```
 
-![#](./images/insert-log.png)
+![#](kubernetes/images/insert-log.png)
 
 ## Check the logs from the Binlog service, again
 
@@ -139,4 +139,4 @@ After running insert script, we can see the logs from the Binlog service.
 kubectl logs deployment.apps/binlog-deployment
 ```
 
-![#](./images/binlog-log-after.png)
+![#](kubernetes/images/binlog-log-after.png)
